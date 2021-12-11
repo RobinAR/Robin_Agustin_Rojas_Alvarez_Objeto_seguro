@@ -20,6 +20,30 @@ class ObjetoSeguro:
         self.base64_msj = 0
 
 
+    # Rojas Alvarez Robin Agustin
+# proyecto, parte 1
+
+from ecies.utils import generate_eth_key
+from ecies import encrypt, decrypt
+import binascii
+import base64
+from pathlib import Path
+import logging
+from datetime import datetime
+import json
+
+
+class ObjetoSeguro:
+    def __init__(self, nombre: str):
+        self.nombre = nombre
+        self.__privkey = ""
+        self.__publicKeyHex = 00
+        self.__privkeyHex = ""
+        self.code = 0
+        self.code_msj = 0
+        self.base64_msj = 0
+        self.__registro = {}
+
     def gen_llaves(self):
        self.__privKey = generate_eth_key()
        self.__privKeyHex = self.__privKey.to_hex()
@@ -27,13 +51,15 @@ class ObjetoSeguro:
        print("Llave publica de cifrado: ", self.__pubKeyHex)
        print("Llave privada de cifrado: ", self.__privKeyHex)
 
-    def saludar(self, name:str, msj:str):
+    def saludar(self, name: str, msj: str):
         self.code_msj = self.codificar64(msj)
         print(f"Hola, soy {name} y esta es mi llave publica {self.__pubKeyHex}")
         return f"Hola, soy {name} y esta es mi llave publica {self.__pubKeyHex}", self.code_msj
 
-    def responder(self, msj:str):
-        pass
+
+    def responder(self, msj):
+        print(f'Hola {self.nombre} eh recibido {msj}')
+        return (f'Hola {self.nombre} eh recibido {msj}')
 
     def llave_publica(self)->str:
         return self.__pubKeyHex
@@ -44,6 +70,7 @@ class ObjetoSeguro:
         self.code = binascii.hexlify(self.code)
         print("Mensaje cifrado", self.code)
         return self.code
+
 
     def decifrar_msj(self, msj):
         decode_msj = binascii.a2b_hex(self.code)
@@ -66,31 +93,36 @@ class ObjetoSeguro:
         print("mensaje decodificado", messaje)
         return messaje
 
-    #def almacenar_msj(self, msj):
-        #id= 0
-        #dicc = {}
-        #if Path ("./mensajes.txt").stat().st_size =! 0:
-            #with open ("./mensajes.txt", "w"):
-                #dicc[f'{id}']={
-             #      "ID: ": id,
-              #     "Mensaje: ": msj,
-               #    "De: ": self.nombre,
-                #   "fecha :": str(datetime.now().strftime("%A, %d of %B %Y at %I:%M %p"))
-            #}
-            #return dicc
+    def almacenar_msj(self, msj):
+        self.__id= 0
+        self.__id += 1
+        d = datetime.now().strftime("%A, %d %B, %y %H:%M%S ")
+        print(d)
+        archivo = "Registro_msj_<"+self.nombre + ">.json"
+        idstr = str(self.__id)
+        self.__registro["{ID:<"+idstr +" }"] = {
+            "ID":self.__id,
+            "Usuario": self.nombre,
+            "Mensaje": msj,
+            "fecha": d}
+        with open(archivo, 'w') as f:
+            json.dump(self.__registro, f, indent=5)
+        print("{ID:<"+ idstr + ">}")
+        return "{ID:<"+ idstr + ">}"
 
-    #def consultar_msj(self, id:int):
-        #logging.debug(f'que # de mensaje quieres consultar?{id}')
-        #if Path ('./mensajes.txt').stat().st_size !=0:
-            #with open("./mensajes.txt", "r"):
-              #  num_mensaje = dicc[f'{id}']
-#                return num_mensaje
+    def consultar_msj(self, id):
+        archivo = "Registro_msj_<"+ self.nombre + ">.json"
+        with open(archivo, 'r') as consulta:
+            objeto_json=json.load(consulta)
+        print(objeto_json[str(self.__id)])
+        return objeto_json[str(self.__id)]
+
 
     def esperar_respuesta(self, msj):
         descifrar = self.decifrar_msj(msj)
         decodificar = self.decodificador64(descifrar)
         print("Recibi: ", decodificar, "de: ", self.nombre)
-        #self.almacenar
+        self.almacenar_msj()
 
 
 
@@ -102,8 +134,10 @@ Objeto1.gen_llaves()
 nombre = input("escriba su nombre, por favor")
 mensaje = input("Escriba el mensaje que desea enviar")
 Objeto1.saludar(nombre, mensaje)
+Objeto1.responder(mensaje)
 Objeto1.cifrar_msj("pub_key", mensaje)
 Objeto1.decifrar_msj(mensaje)
 Objeto1.codificar64(mensaje)
 Objeto1.decodificador64(mensaje)
 Objeto1.almacenar_msj(mensaje)
+Objeto1.consultar_msj()
