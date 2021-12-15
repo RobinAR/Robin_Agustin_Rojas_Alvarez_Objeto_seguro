@@ -1,0 +1,14 @@
+Librerías requeridas y utilizadas
+
+
+import socket
+from concurrent.futures import ThreadPoolExecutor
+import logging
+from concurrent.futures.thread import ThreadPoolExecutor
+from ecies.utils import generate_eth_key
+from ecies import encrypt, decrypt
+import base64
+from pathlib import Path
+import logging
+from datetime import datetime
+import json
