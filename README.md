@@ -1,5 +1,5 @@
 # Robin_Agustin_Rojas_Alvarez_Objeto_seguro
 Proyecto final Python parte 2 intel
 
-tengo problemas cuando compilo, se corre primero el archivo main, intentando instanciar como cliente o servidor me da error en el metodo bind
-
+funciona a tarvés del archivo main, donde se encuentra la instanciación de los objetos, se define primero de manera manual el nombre y puerto del objeto, después se decide su rol, ya sea cliente o servidor, al escoger servidor este programa iniciara un socket servidor en el cual comenzará por levantar el servicio, y estar disponible a las psibles conexiones.
+Se instancia un segundo objeto, donde esta vez será cliente, comenzará por inciar conección, en cuanto inicien se intercambiarán las llaves publicas entre el cliente y el servidor, se enviará un saludo y el servidor comenzará a recibir mensajes codificados del cliente, los mostrará en pantalla junto con su identificador; mientras que el cliente podrá estar mandando mensaje al servidor, si decide finalizar solo escribe en los mensajes "Salir", lo cual detendrá la comunicación, sin embargo el servidor siempre estará disponible para hacer conexiones con más clientes, ya sea al mismo tiempo o por separado, si se detieen todo tanto en los clientes como en el servidor, cerrará toda comuncación y borrará los datos
